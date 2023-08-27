@@ -1496,6 +1496,7 @@ class MLB_GPP_Simulator:
                         continue
             counter = collections.Counter(lu_teams)
             stacks = counter.most_common(2)
+            cv_own = np.std(own_p) / np.mean(own_p) * 100
             own_p = np.prod(own_p)
             win_p = round(x["Wins"] / self.num_iterations * 100, 2)
             top10_p = round(x["Top10"] / self.num_iterations * 100, 2)
@@ -1507,7 +1508,7 @@ class MLB_GPP_Simulator:
                         x["ROI"] / self.entry_fee / self.num_iterations * 100, 2
                     )
                     roi_round = round(x["ROI"] / self.num_iterations, 2)
-                    lineup_str = "{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{},{},${},{}%,{}%,{}%,{},${},{},{},{},{}".format(
+                    lineup_str = "{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{},{},${},{}%,{}%,{}%,{},${},{:.2f},{},{},{},{}".format(
                         lu_names[0].replace("#", "-"),
                         x["Lineup"][0],
                         lu_names[1].replace("#", "-"),
@@ -1536,13 +1537,14 @@ class MLB_GPP_Simulator:
                         roi_p,
                         own_p,
                         roi_round,
+                        cv_own,
                         str(stacks[0][0]) + " " + str(stacks[0][1]),
                         str(stacks[1][0]) + " " + str(stacks[1][1]),
                         hitters_vs_pitcher,
                         lu_type,
                     )
                 else:
-                    lineup_str = "{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{},{},{},{}%,{}%,{}%,{},{},{},{}".format(
+                    lineup_str = "{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{} ({}),{},{},{},{}%,{}%,{}%,{:.2f},{},{},{},{}".format(
                         lu_names[0].replace("#", "-"),
                         x["Lineup"][0],
                         lu_names[1].replace("#", "-"),
@@ -1569,6 +1571,7 @@ class MLB_GPP_Simulator:
                         win_p,
                         top10_p,
                         own_p,
+                        cv_own,
                         str(stacks[0][0]) + " " + str(stacks[0][1]),
                         str(stacks[1][0]) + " " + str(stacks[1][1]),
                         hitters_vs_pitcher,
@@ -1655,11 +1658,11 @@ class MLB_GPP_Simulator:
             if self.site == "dk":
                 if self.use_contest_data:
                     f.write(
-                        "P,P,C,1B,2B,3B,SS,OF,OF,OF,Fpts Proj,Ceiling,Salary,Win %,Top 10%,ROI%,Proj. Own. Product,Avg. Return,Stack1 Type,Stack2 Type,Num Opp Hitters,Lineup Type\n"
+                        "P,P,C,1B,2B,3B,SS,OF,OF,OF,Fpts Proj,Ceiling,Salary,Win %,Top 10%,ROI%,Proj. Own. Product,Avg. Return,Coefficient of Variation,Stack1 Type,Stack2 Type,Num Opp Hitters,Lineup Type\n"
                     )
                 else:
                     f.write(
-                        "P,P,C,1B,2B,3B,SS,OF,OF,OF,Fpts Proj,Ceiling,Salary,Win %,Top 10%, Proj. Own. Product,Stack1 Type,Stack2 Type,Num Opp Hitters,Lineup Type\n"
+                        "P,P,C,1B,2B,3B,SS,OF,OF,OF,Fpts Proj,Ceiling,Salary,Win %,Top 10%, Proj. Own. Product,Coefficient of Variation,Stack1 Type,Stack2 Type,Num Opp Hitters,Lineup Type\n"
                     )
             elif self.site == "fd":
                 if self.use_contest_data:
